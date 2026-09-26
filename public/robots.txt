@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jmi-entertainment.vercel.app/sitemap.xml

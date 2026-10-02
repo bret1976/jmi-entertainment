@@ -35,6 +35,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Desktop-only hero film preload so scrub can start sooner; mobile keeps its smaller asset. */}
+        <link
+          rel="preload"
+          as="video"
+          href="/scroll-world/video/jmi-scroll-hero.mp4"
+          type="video/mp4"
+          media="(min-width: 601px)"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>

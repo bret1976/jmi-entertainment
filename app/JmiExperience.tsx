@@ -102,6 +102,7 @@ export function JmiExperience() {
     let target = 0;
     let current = 0;
     let metadataReady = false;
+    let objectUrl = "";
     let lastScrubAt = performance.now();
     let lastViewportWidth = window.innerWidth;
     const phoneMedia = window.matchMedia("(max-width: 600px)").matches;
@@ -127,8 +128,7 @@ export function JmiExperience() {
     const scrub = (now: number) => {
       const elapsed = Math.min(0.05, Math.max(0, (now - lastScrubAt) / 1000));
       lastScrubAt = now;
-      // Higher damping (~20) keeps scrub snappy without rubber-banding.
-      current += (target - current) * (1 - Math.exp(-20 * elapsed));
+      current += (target - current) * (1 - Math.exp(-15 * elapsed));
       if (metadataReady && !video.seeking) {
         const nextTime = Math.min(video.duration - 0.001, Math.max(0, current * video.duration));
         if (Math.abs(video.currentTime - nextTime) > 1 / 30) video.currentTime = nextTime;
@@ -153,10 +153,17 @@ export function JmiExperience() {
       video.poster = phoneMedia
         ? "/scroll-world/video/jmi-scroll-hero-mobile-poster.png"
         : "/scroll-world/video/jmi-scroll-hero-poster.png";
-      // Stream from the CDN path immediately so metadata/scrub can start
-      // as soon as the browser has range headers — do not wait on a full blob fetch.
-      video.src = filmUrl;
-      video.load();
+      fetch(filmUrl)
+        .then((response) => {
+          if (!response.ok) throw new Error("Scroll film failed to load");
+          return response.blob();
+        })
+        .then((blob) => {
+          objectUrl = URL.createObjectURL(blob);
+          video.src = objectUrl;
+          video.load();
+        })
+        .catch(() => setReducedMotion(true));
     }
 
     return () => {
@@ -165,6 +172,7 @@ export function JmiExperience() {
       video.removeEventListener("loadedmetadata", onMetadata);
       if (scrollFrame) cancelAnimationFrame(scrollFrame);
       if (scrubFrame) cancelAnimationFrame(scrubFrame);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, []);
 

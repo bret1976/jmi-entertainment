@@ -18,7 +18,7 @@ const storyStills = [
   "/scroll-world/stills/04-impact.webp",
 ] as const;
 
-const chapterProgress = [0, 8.5 / 28, 17 / 28, 24.5 / 28] as const;
+const chapterProgress = [0, 100 / 620, 200 / 620, 300 / 620] as const;
 
 const projects = [
   { title: "Nostalgia", type: "Original Film", image: "/projects/nostalgia.webp", n: "01" },

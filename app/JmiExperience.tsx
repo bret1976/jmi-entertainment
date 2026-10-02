@@ -128,7 +128,7 @@ export function JmiExperience() {
     const scrub = (now: number) => {
       const elapsed = Math.min(0.05, Math.max(0, (now - lastScrubAt) / 1000));
       lastScrubAt = now;
-      current += (target - current) * (1 - Math.exp(-15 * elapsed));
+      current += (target - current) * (1 - Math.exp(-12 * elapsed));
       if (metadataReady && !video.seeking) {
         const nextTime = Math.min(video.duration - 0.001, Math.max(0, current * video.duration));
         if (Math.abs(video.currentTime - nextTime) > 1 / 30) video.currentTime = nextTime;
